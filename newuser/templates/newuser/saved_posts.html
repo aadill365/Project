@@ -1,0 +1,39 @@
+{%extends 'newuser/base.html'%}
+{%block content%}
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-6">
+        <strong class="text-warning">Saved posts by you {{posts.count}}</strong>
+        {%for post in posts%}
+        <div class="card my-2">
+            <div class="card-header">
+                <img src="{{post.saved_posts.author.profile_picture.url}}" alt="" class="article-img rounded-circle">
+                <strong><a href="{% url 'profile' post.saved_posts.author.username%}" class="text-dark">{{post.saved_posts.author.username}}</a></strong>
+            </div>
+            <div class="card-header">
+                <h3><a href="{% url 'post-detail' post.saved_posts.id%}" class="">{{post.saved_posts.title}}</a></h3>
+                <p>{{post.saved_posts.date_posted | date:"M d,Y"}}</p>
+            </div>
+            <div class="card-body">
+                <p>{{post.saved_posts.content|urlize|linebreaks}}</p>
+            </div>
+            <div class="card-footer d-flex justify-content-between">
+                {% if request.user in post.saved_posts.likes.all%}
+                <span>
+                    <i class="fas fa-thumbs-up" id="like-button-{{post.saved_posts.id}}" onclick="like({{post.saved_posts.id}})"></i>
+                    <span id="likes-count-{{post.saved_posts.id}}">{{post.saved_posts.total_likes}}</span>
+                </span>
+                {%else%}
+                <span>
+                    <i class="far fa-thumbs-up" id="like-button-{{post.saved_posts.id}}" onclick="like({{post.saved_posts.id}})"></i>
+                    <span id="likes-count-{{post.saved_posts.id}}">{{post.saved_posts.total_likes}}</span>
+                </span>
+                {%endif%}
+                <i class="fas fa-bookmark" onclick="save({{post.saved_posts.id}})" id="save-{{post.saved_posts.id}}"></i>
+            </div>
+        </div>
+        {%endfor%}
+    </div>
+</div>
+{%load static%}
+<script src="{% static 'newuser/js/index.js'%}"></script>
+{%endblock%}

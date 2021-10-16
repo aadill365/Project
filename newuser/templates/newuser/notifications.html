@@ -1,0 +1,65 @@
+{%extends 'newuser/base.html'%}
+{%block content%}
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-6 content-section bg-dark border border-dark text-light">
+    		{%if notifications%}
+		{%for noti in notifications%}
+		
+<p><a href="{%url 'profile' noti.sender%}">{{noti.sender}}</a> {{noti.action}}
+				{%if noti.post%}<a href="{%url 'post-detail' noti.post.id%}">{{noti.post}}</a>{%endif%}</p>
+			
+		
+		{%endfor%}
+		{%else%}
+		
+		<p class="text-danger">No new notifications</p>
+		<hr>
+		{%endif%}
+		<p class="text-info">older notifications</p>
+		<hr>
+		{%for older in older_noti%}
+			<p><a href="{% url 'profile' older.sender%}">{{older.sender}}</a> {{older.action}}
+				{%if older.post%}<a href="{%url 'post-detail' older.post.id%}">{{older.post}}</a>{%endif%}</p>
+		
+			
+			
+
+		
+
+		<hr class="text-light">
+		{%endfor%}
+	</div>
+</div>
+<script>
+
+	function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+	window.onload = function() {
+		
+	fetch('/update_notifications/',{method:'POST',credentials: "same-origin",
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"),
+          "Accept": "application/json",
+          'Content-Type': 'application/json'
+        },
+            
+        }).then((res) => res.json())
+        .then((data)=>{
+            console.log('notifications cleared')
+        })
+	}
+</script>
+{%endblock%}

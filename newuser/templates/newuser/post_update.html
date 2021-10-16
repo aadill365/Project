@@ -1,0 +1,17 @@
+{%extends 'newuser/base.html'%}
+{%block content%}
+{% load crispy_forms_tags%}
+<div class="row">
+	<div class="col-lg-8">
+		<div class="form bg-dark">
+			<legend><h3 class="text-light">Update Post</h3></legend>
+			<hr class="text-light">
+			<span class="text-light">Current User: {{request.user.username}}</span>
+			<form action="" method='POST'>{%csrf_token%}
+				{{form | crispy}}
+				<input type="submit" value="Update" class="btn btn-success w-100 mt-4">
+			</form>
+		</div>
+	</div>
+</div>
+{%endblock%}

@@ -1,0 +1,94 @@
+{%extends 'newuser/base.html'%}
+{%load static%}
+{% load mentions%}
+
+{%block content%}
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-6">
+        <div class="content-section pb-3">
+            {%if user.is_superuser%}
+            <p><strong>{{user.username}} <i class="fas fa-check-circle text-primary"></i></strong></p>
+            {%else%}
+            <p><strong>{{user.username}}</strong></p>
+
+            {%endif%}
+            <img src="{{user.profile_picture.url}}" alt="" class="rounded-circle account-img">
+            <h6>{{user.first_name}} {{user.last_name}}</h6>
+            {%if user.bio%}
+            <span class="text-primary">{{user.bio|linebreaks}}</span>
+            {%endif%}
+            
+
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-4 text-center">
+                    <p><strong>{{posts.count}}</strong></p>
+                    <span>posts</span>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-4 text-center">
+                    <p><strong id="follower-count-{{user.id}}">{{user.followed.count}}</strong></p>
+                    <span>Followers</span>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-4 text-center">
+                    <p><strong>{{user.follower.count}}</strong></p>
+                    <span>Following</span>
+                </div>
+
+            </div>
+            {%if request.user != user%}
+            <div class="text-center py-3">
+                {%if follow %}
+                <button class="btn btn-primary btn-sm px-5 py-0" onclick="follow({{user.id}})" id="follow-{{user.id}}">Follow</button>
+                {%else%}
+                <button class="btn btn-outline-dark btn-sm px-5 py-0" onclick="follow({{user.id}})" id="follow-{{user.id}}">Unfollow</button>
+                {%endif%}
+            </div>
+            {%else%}
+            <div class="text-center py-3">
+                <a href="{%url 'edit'%}" class="btn btn-dark btn-sm px-5 py-0">Edit</a>
+            </div>
+            {%endif%}
+
+        </div>
+    </div>
+</div>
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-6">
+        {%for post in posts%}
+        <div class="card mb-3">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <span>
+                    <img class="rounded-circle article-img" src="{{ post.author.profile_picture.url}}">
+                    <strong>{{post.author.username}}</strong>
+                </span>
+            </div>
+            <div class="card-header">
+                <h3><a href="{% url 'post-detail' post.pk%}" class="article-title">{{post.title}}</a></h3>
+                <p>{{post.date_posted | date:"M d,Y"}} by <a href="{%url 'profile' post.author.username%}">{{post.author.username}}</a></p>
+            </div>
+            <div class="card-body">
+                <p>{{post.content|mention|safe |linebreaks|urlize}}</p>
+            </div>
+            <div class="card-footer d-flex justify-content-between">
+                {% if request.user in post.likes.all%}
+                <span>
+                    <i class="fas fa-thumbs-up" id="like-button-{{post.id}}" onclick="like({{post.id}})"></i>
+                    <span id="likes-count-{{post.id}}">{{post.total_likes}}</span>
+                </span>
+                {%else%}
+                <span>
+                    <i class="far fa-thumbs-up" id="like-button-{{post.id}}" onclick="like({{post.id}})"></i>
+                    <span id="likes-count-{{post.id}}">{{post.total_likes}}</span>
+                </span>
+                {%endif%}
+                {%if post.id in saved_posts%}
+                <i class="fas fa-bookmark" onclick="save({{post.id}})" id="save-{{post.id}}"></i>
+                {%else%}
+                <i class="far fa-bookmark" onclick="save({{post.id}})" id="save-{{post.id}}"></i>
+                {%endif%}
+            </div>
+        </div>
+        {%endfor%}
+    </div>
+</div>
+<script src="{% static 'newuser/js/index.js'%}"></script>
+{%endblock%}

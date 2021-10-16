@@ -1,0 +1,116 @@
+{%extends 'newuser/base.html'%}
+{% load static %}
+{% load mentions %}
+{%block content%}
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-6">
+
+        {%if user.is_authenticated%}
+        <strong class="text-danger">{{user.username}}</strong>
+        {%endif%}
+        {%if not posts%}
+        <br>
+        <strong class="text-info">There are no posts to display!!</strong>
+        {%endif%}
+    </div>
+</div>
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-6">
+        {%for post in posts%}
+        <div class="card my-3">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <span>
+                    <img class="rounded-circle article-img" src="{{ post.author.profile_picture.url}}">
+                    <strong><a href="{%url 'profile' post.author.username%}" class="text-dark">{{post.author.username}}</a></strong>
+                </span>
+                <div class="dropright">
+                    <i class="fas fa-ellipsis-v" id="dropdownmenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    </i>
+                    {%if user.username == post.author.username%}
+                    <div class="dropdown-menu" aria-labelledby="dropdown-menu">
+                        <a href="{% url 'post-update' post.id%}" class="text-dark dropdown-item">Update</a>
+                        <a class="text-danger dropdown-item" data-toggle="modal" data-target="#deleteModal-{{post.id}}">Delete</a>
+                    </div>
+                    {%else%}
+                    <div class="dropdown-menu" aria-labelledby="dropdown-menu">
+                        <a href="" class="dropdown-item">View Post</a>
+                    </div>
+                    {%endif%}
+                </div>
+            </div>
+            <div class="card-header">
+                <h3><a href="{% url 'post-detail' post.pk%}" class="">{{post.title}}</a></h3>
+                <p>{{post.date_posted | date:"M d,Y"}} by <a href="{%url 'profile' post.author.username%}">{{post.author.username}}</a></p>
+            </div>
+            <div class="card-body">
+                <p>{{post.content|mention|safe|linebreaks|urlize}}</p>
+            </div>
+            <div class="card-footer d-flex justify-content-between">
+                {% if request.user in post.likes.all%}
+                <span>
+                    <i class="fas fa-thumbs-up" id="like-button-{{post.id}}" onclick="like({{post.id}})"></i>
+                    <span id="likes-count-{{post.id}}">{{post.total_likes}}</span>
+                </span>
+                {%else%}
+                <span>
+                    <i class="far fa-thumbs-up" id="like-button-{{post.id}}" onclick="like({{post.id}})"></i>
+                    <span id="likes-count-{{post.id}}">{{post.total_likes}}</span>
+                </span>
+                {%endif%}
+                {%if post.id in saved_posts%}
+
+                        <i class="fas fa-bookmark" onclick="save({{post.id}})" id="save-{{post.id}}"></i>
+                        {%else%}
+                        <i class="far fa-bookmark" onclick="save({{post.id}})" id="save-{{post.id}}"></i>
+                {%endif%}
+                
+
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="deleteModal-{{post.id}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Delete Post?</h5>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"><i class="far fa-cross"></i></span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete the post <strong class="text-danger">{{post.title}}</strong>?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                        <a href="{% url 'post-delete' pk=post.id %}" class="btn btn-danger btn-sm">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {%endfor%}
+    </div>
+</div>
+{%if posts%}
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-6">
+        {%if posts.has_previous%}
+        <a href="/?page=1" class="btn btn-outline-primary">First</a>
+        <a href="/?page={{posts.previous_page_number}}" class="btn btn-outline-primary">Previous</a>
+        {%endif%}
+        {% for num in posts.paginator.page_range%}
+        {%if posts.number == num %}
+        <a href="?page={{num}}" class="btn btn-primary">{{num}}</a>
+        {%elif num > posts.number|add:'-3' and num < posts.number|add:'3'%} <a href="?page={{num}}" class="btn btn-outline-primary">{{num}}</a>
+            {%endif%}
+            {%endfor%}
+            {%if posts.has_next%}
+            <a href="/?page={{posts.next_page_number}}" class="btn btn-outline-primary">Next</a>
+            <a href="/?page={{posts.paginator.num_pages}}" class="btn btn-outline-primary">Last</a>
+            {%endif%}
+    </div>
+</div>
+{%endif%}
+<script src="{% static 'newuser/js/index.js'%}"></script>
+{%endblock%}

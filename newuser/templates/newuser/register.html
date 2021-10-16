@@ -1,0 +1,22 @@
+{%extends 'newuser/base.html'%}
+{%block content%}
+{%load crispy_forms_tags%}
+<div class="row">
+    <div class="col-lg-6 col-md-9 col-sm-12 column">
+        <div class="form bg-dark">
+            
+            <form action="" method="POST">{%csrf_token%}
+                <legend>
+                    <h2 class="text-light">Register</h2>
+                </legend>
+                <hr class="text-light">
+                {{form | crispy}}
+                <input type="submit" value="REGISTER" class="btn btn-success w-100 mt-4">
+            </form>
+            <div class="border-top my-3">
+            <small class="text-muted ">Already have an Account?<a href="{%url 'login' %}">Login</a></small>
+        </div>
+        </div>
+    </div>
+</div>
+{%endblock%}

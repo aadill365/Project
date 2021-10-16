@@ -1,0 +1,19 @@
+{%extends 'newuser/base.html'%}
+
+
+{%block content%}
+<div class="row d-flex justify-content-center text-light">
+    <div class="col-lg-6">
+		<legend><h2 class="text-light">About</h2><hr class="text-light"></legend>
+		<strong>We recommend you to use this site on mobile to get the better user experience.</strong>
+		<p class="text-light">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur mollitia distinctio, sit quod, praesentium in nobis delectus earum tempora laudantium officiis autem, alias, placeat voluptatibus velit aut maxime facilis corrupti harum fuga recusandae et. Quas, ut! Repudiandae quam eaque, quasi nemo ex natus, sunt nam.</p>
+		{%if not request.user.is_authenticated%}
+		<a href="{%url 'register'%}" class="btn btn-primary mb-2"><strong>Register</strong></a>
+		<a href="{%url 'login'%}" class="btn btn-light mb-2"><strong>Login</strong></a>
+		{%endif%}
+		<h2 class="text-light">Contact us</h2>
+		<a href="mailto:mail2adil365@gmail.com"><i class="fas fa-envelope"></i></a>
+		<strong>send an email to us just by clicking on email icon</strong>
+	</div>
+</div>
+{%endblock%}

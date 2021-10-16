@@ -1,0 +1,46 @@
+
+{%extends 'newuser/base.html'%}
+{%block content%}
+    <div class="row">
+        <div class="col-lg-6 col-md-9 col-sm-12 column">
+            <div class="form bg-dark">
+                <form action="" method="POST">{%csrf_token%}
+                    <legend>
+                        <h2 class="text-light">Login</h2>
+                    </legend>
+                    <hr class="text-light">
+                    <div class="input-field">
+                        {{form.email}}
+
+                        {%if form.email.errors%}
+                        {%for error in form.email.errors%}
+                        <p class="text-danger">{{error}}</p>
+
+                        {%endfor%}
+                        
+                        {%endif%}
+
+                    </div>
+                    <div class="input-field">
+                        {{form.password}}
+
+                        {%if form.password.errors%}
+                        {%for error in form.password.errors%}
+                        <p class="text-danger">{{error}}</p>
+                        {%endfor%}
+                        {%endif%}
+                    </div>
+                    <input type="submit" value="LOGIN" class="btn btn-success w-100 mb-2">
+                    <div class="text-center my-3">
+                        <a href="{%url 'password_reset'%}" class="text-secondary">Forgot your password?</a>
+                    </div>
+                </form>
+                <div class="border-top">
+                    <small class="text-muted">
+                        Need an Account?<a href="{% url 'register'%}" class="ml-2">Sign Up</a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+{%endblock%}

@@ -1,0 +1,56 @@
+{%extends 'newuser/base.html'%}
+
+{%block content%}
+<div class="row d-flex justify-content-center">
+	<div class="col-lg-6">
+
+		<div class="form bg-dark">
+			<div class="text-danger" id="error">
+                    
+                </div>
+			
+			
+				<input type="text" class="form-control my-2" name="search" id="search" required placeholder="search users here">
+				
+
+		</div>
+		
+	</div>
+	
+</div>
+
+<div class="row d-flex justify-content-center mt-2">
+	<div class="col-lg-6" id="box">
+		
+	</div>
+	
+
+</div>
+<script type="text/javascript">
+	var data = {{json|safe}};
+	const input=document.getElementById('search');
+	// console.log(input);
+	let filteredArr = [];
+	input.addEventListener('keyup', (event)=>{
+		box.innerHTML = "";
+		
+		filteredArr = data.filter(info=> info.fields['username'].includes(event.target.value));
+		if (filteredArr.length > 0){
+			filteredArr.map(item=>{
+				box.innerHTML += `<img src="${item.fields.profile_picture}" alt="" class="profile-img rounded-circle">`
+				box.innerHTML += `<a href="/profile/${item.fields['username']}">${item.fields['username']}</a><br><hr>`
+			box.className = "text-primary col-lg-6"
+
+				
+			})
+		}
+
+		else {
+			box.innerHTML = "<span>No results found</span>"
+			box.className = "text-danger col-lg-6"
+			
+		}
+	
+	})
+</script>
+{%endblock%}

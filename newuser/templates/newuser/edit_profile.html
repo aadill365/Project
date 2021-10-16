@@ -1,0 +1,53 @@
+{%extends 'newuser/base.html'%}
+{%block content%}
+<!-- {%load crispy_forms_tags%} -->
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-6">
+        <div class="form bg-light">
+            <legend>Edit Profile</legend>
+            <hr>
+            <form action="" method="post" enctype="multipart/form-data">
+                {%csrf_token%}
+                <div class="input-field">
+                    {{form.username.label}}
+                    {%if form.username.errors%}
+                    {%for error in form.username.errors%}
+                    {{form.username}}
+                    <div class="text-danger">{{error}}</div>
+                    {%endfor%}
+                    {%else%}
+                    {{form.username}}
+                    {%endif%}
+                </div>
+                <div class="input-field">
+                    {{form.profile_picture}}
+                </div>
+                <div class="input-field">
+                    {{form.first_name.label}}
+                    {{form.first_name}}
+
+                    {{form.last_name.label}}
+                    {{form.last_name}}
+                </div>
+                <div class="input-field">
+                    {{form.phonenumber.label}}
+                    {%if form.phonenumber.errors%}
+                    {%for error in form.phonenumber.errors%}
+                    {{form.phonenumber}}
+                    <div class="text-danger">{{error}}</div>
+                    {%endfor%}
+                    {%else%}
+                    {{form.phonenumber}}
+                    {%endif%}
+                </div>
+                <div class="input-field">
+                    {{form.bio.label}}
+                    {{form.bio}}
+                    
+                </div>
+                <input type="submit" value="Update" class="btn btn-success w-100 mt-4">
+            </form>
+        </div>
+    </div>
+</div>
+{%endblock%}

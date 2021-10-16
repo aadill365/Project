@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'newuser/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'newuser/main.css' %}">
+    <link rel="stylesheet" href="{% static 'newuser/fontawesome/css/all.min.css' %}">
+    {% if title %}
+    <title>Django-{{title}}</title>
+    {% else %}
+    <title>Django</title>
+    {% endif %}
+</head>
+
+<body>
+    {%include 'newuser/navbar.html'%}
+    <main role="main" class="fluid-container">
+        <div class="row d-flex justify-content-center">
+            <div class="col-lg-6 col-md-9 col-sm-12">
+                {%if messages%}
+                {%for message in messages%}
+                <div class="alert alert-{{message.tags}} alert-dismissaable fade show" role="alert">
+                    <span>{{message}}</span>
+                </div>
+                {%endfor%}
+                {%endif%}
+            </div>
+        </div>
+        {% block content %}{% endblock %}
+    </main>
+    <script src="{% static 'newuser/js/jquery-3.2.1.slim.min.js'%}"></script>
+    <script src="{% static 'newuser/js/popper.min.js'%}"></script>
+    <script src="{% static 'newuser/js/bootstrap.min.js'%}"></script>
+    {%if request.user.is_authenticated%}
+    <div class="fixed-bottom p-2 bg-dark">
+        <div class="fluid-container d-flex justify-content-between">
+            <a href="{%url 'home'%}" class="text-light"><i class="fas fa-home fa-2x"></i></a>
+            <a href="{%url 'search'%}" class="text-light"><i class="fas fa-search fa-2x"></i></a>
+            <a href="{%url 'create'%}" class="text-light"><i class="fas fa-plus fa-2x"></i></a>
+            <a href="{%url 'noti'%}" class="text-light"><i class="fas fa-bell fa-2x"></i><span id="count"></span></a>
+            <a href="{%url 'profile' request.user.username%}" class="text-light"><img src="{{request.user.profile_picture.url}}" alt="" class="rounded-circle profile-img border border-light border-2"></a>
+
+        </div>
+    </div>
+    {%endif%}
+{%if notifications%}
+
+    <script>
+    const c = document.getElementById('count');
+    c.innerHTML = {{notifications.count | safe}};
+    c.style.color = 'black';
+    c.style.background = 'white';
+</script>
+{%endif%}
+</body>
+
+</html>
